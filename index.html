@@ -9,20 +9,37 @@
 <body>
     <div class="hud-overlay"></div>
 
-    <div id="hub-screen" class="screen active">
+    <div id="welcome-screen" class="screen active">
+        <div class="welcome-content">
+            <p class="welcome-kicker">ESCAPE FROM KRAKOV</p>
+            <h1>ДОБРО ПОЖАЛОВАТЬ<br>В КРАКОВ</h1>
+            <button id="welcome-play-btn">ИГРАТЬ</button>
+            <button id="welcome-exit-btn" class="welcome-exit">ВЫЙТИ</button>
+        </div>
+    </div>
+
+    <div id="hub-screen" class="screen">
         <div class="menu-content">
             <h1>УБЕЖИЩЕ</h1>
+
+            <div class="character-name">
+                ОПЕРАТИВНИК: <span id="hub-character-name">—</span>
+            </div>
 
             <div class="hub-stats">
                 <div>Баланс: <span id="hub-money" class="money-text">0</span> ₽</div>
                 <div>Здоровье: <span id="hub-hp" class="money-text">100</span>/100</div>
-                <div>Оружие: <span id="hub-weapon">ПМ</span></div>
+                <div>Энергия: <span id="hub-energy" class="money-text">100</span>/100</div>
+                <div>Оружие: <span id="hub-weapon">Нож</span></div>
+                <div>Броня: <span id="hub-armor">Нет</span></div>
+                <div>Рюкзак: <span id="hub-backpack">Сумка</span></div>
             </div>
 
             <div class="hub-tabs">
                 <button class="tab-btn active" onclick="switchHubTab('raid', this)">В РЕЙД</button>
-                <button class="tab-btn" onclick="switchHubTab('shop', this)">МАГАЗИН</button>
+                <button class="tab-btn" onclick="switchHubTab('shop', this)">МАГАЗИНЫ</button>
                 <button class="tab-btn" onclick="switchHubTab('stash', this)">СХРОН</button>
+                <button class="tab-btn" onclick="switchHubTab('loadout', this)">СНАРЯЖЕНИЕ</button>
                 <button class="tab-btn" onclick="switchHubTab('stats', this)">СТАТИСТИКА</button>
             </div>
 
@@ -40,34 +57,77 @@
                     <button class="map-btn" data-map="Развязка" data-bg="mall.jpg.png">Развязка</button>
                 </div>
 
+                <h2>РЕЖИМ АТАКИ</h2>
+                <div class="attack-mode-choices">
+                    <button class="attack-mode-btn" data-mode="button">КНОПКА «АТАКОВАТЬ»</button>
+                    <button class="attack-mode-btn" data-mode="aim">КЛИК ПО МИШЕНИ</button>
+                </div>
+
+                <p class="hint">Нож всегда с вами. Для рейда можно выбрать одно огнестрельное оружие.</p>
+                <p class="hint">Выход доступен в любой момент, если выполнены условия точки эвакуации.</p>
                 <button id="start-btn" disabled>НАЧАТЬ РЕЙД</button>
             </div>
 
             <div id="hub-shop" class="tab-content hidden">
-                <div class="shop-grid">
-                    <button class="shop-btn" onclick="buyItem('backpack', 1)">Рюкзак 4x4<br><span>2000 ₽</span></button>
-                    <button class="shop-btn" onclick="buyItem('backpack', 2)">Беркут 5x5<br><span>10000 ₽</span></button>
-                    <button class="shop-btn" onclick="buyItem('weapon', 'АК-74')">АК-74<br><span>1500 ₽</span></button>
-                    <button class="shop-btn" onclick="buyItem('weapon', 'M4A1')">M4A1<br><span>5000 ₽</span></button>
-                    <button class="shop-btn" onclick="buyItem('item', 'Аптечка')">Аптечка<br><span>100 ₽</span></button>
-                    <button class="shop-btn" onclick="buyItem('item', 'Большая аптечка')">Большая аптечка<br><span>250 ₽</span></button>
-                    <button class="shop-btn" onclick="buyItem('item', 'Бинт')">Бинт<br><span>60 ₽</span></button>
-                    <button class="shop-btn" onclick="buyItem('item', 'Бронежилет')">Бронежилет<br><span>600 ₽</span></button>
-                    <button class="shop-btn" onclick="buyItem('item', 'Граната')">Граната<br><span>150 ₽</span></button>
-                    <button class="shop-btn" onclick="buyItem('item', 'Стимулятор')">Стимулятор<br><span>500 ₽</span></button>
-                    <button class="shop-btn" onclick="buyItem('ammo', '9x18')">Патроны 9x18<br><span>50 ₽</span></button>
-                    <button class="shop-btn" onclick="buyItem('ammo', '5.45')">Патроны 5.45<br><span>150 ₽</span></button>
-                    <button class="shop-btn" onclick="buyItem('ammo', '5.56')">Патроны 5.56<br><span>300 ₽</span></button>
+                <div class="shop-categories">
+                    <button class="shop-category-btn active" data-shop="weapons">ОРУЖИЕ И БРОНЯ</button>
+                    <button class="shop-category-btn" data-shop="medical">ЛЕЧЕНИЕ</button>
+                    <button class="shop-category-btn" data-shop="food">ЕДА И ВОДА</button>
+                    <button class="shop-category-btn" data-shop="special">ОСОБЫЕ ПРЕДМЕТЫ</button>
+                    <button class="shop-category-btn" data-shop="ammo">ПАТРОНЫ</button>
+                    <button class="shop-category-btn" data-shop="backpacks">РЮКЗАКИ</button>
                 </div>
+                <div id="shop-grid" class="shop-grid"></div>
+                <p class="hint">Покупки отправляются в схрон. Продажа предметов доступна в схроне.</p>
             </div>
 
             <div id="hub-stash" class="tab-content hidden">
-                <h2>ТВОЙ СХРОН — нажми на предмет</h2>
+                <h2>ТВОЙ СХРОН — выбери раздел</h2>
+                <div class="stash-categories">
+                    <button class="stash-category-btn active" data-stash="all">ВСЁ</button>
+                    <button class="stash-category-btn" data-stash="weapon">ОРУЖИЕ</button>
+                    <button class="stash-category-btn" data-stash="armor">БРОНЯ</button>
+                    <button class="stash-category-btn" data-stash="backpack">РЮКЗАКИ</button>
+                    <button class="stash-category-btn" data-stash="medical">ЛЕЧЕНИЕ</button>
+                    <button class="stash-category-btn" data-stash="food">ЕДА И ВОДА</button>
+                    <button class="stash-category-btn" data-stash="special">ОСОБОЕ</button>
+                    <button class="stash-category-btn" data-stash="ammo">ПАТРОНЫ</button>
+                </div>
                 <div class="grid-wrapper stash-wrapper">
                     <div class="grid-background" id="stash-bg"></div>
                     <div class="grid-items" id="stash-items"></div>
                 </div>
-                <p class="hint">В схроне можно использовать подходящие предметы или продать их.</p>
+                <p class="hint">Нажми на предмет, чтобы продать, использовать или экипировать.</p>
+            </div>
+
+            <div id="hub-loadout" class="tab-content hidden">
+                <h2>СЛОТЫ ЭКИПИРОВКИ</h2>
+                <div class="equipment-slots">
+                    <label>Огнестрельное оружие
+                        <select id="weapon-slot"></select>
+                    </label>
+                    <label>Броня
+                        <select id="armor-slot"></select>
+                    </label>
+                    <label>Маска
+                        <select id="mask-slot"></select>
+                    </label>
+                    <label>Рюкзак
+                        <select id="backpack-slot"></select>
+                    </label>
+                    <button id="repair-btn" class="shop-btn">ПОЧИНИТЬ ЭКИПИРОВКУ</button>
+                </div>
+                <p class="hint">Нож нельзя потерять. Обычную броню и оружие можно ремонтировать. Эксклюзивы не чинятся.</p>
+                <h2>ПРЕДМЕТЫ ДЛЯ РЕЙДА</h2>
+                <div class="grid-wrapper stash-wrapper">
+                    <div class="grid-background" id="loadout-bg"></div>
+                    <div class="grid-items" id="loadout-items"></div>
+                </div>
+                <p id="loadout-weight" class="hint">Занято: 0/9</p>
+                <div class="loadout-controls">
+                    <button class="shop-btn" onclick="equipAllUseful()">ВЗЯТЬ ЛЕЧЕНИЕ И ГРАНАТЫ</button>
+                    <button class="shop-btn" onclick="clearLoadout()">УБРАТЬ ВСЁ В СХРОН</button>
+                </div>
             </div>
 
             <div id="hub-stats" class="tab-content hidden">
@@ -85,19 +145,25 @@
     <main id="game-screen" class="screen">
         <header class="top-bar">
             <div class="info">
+                <span class="character-tag" id="raid-character-name"></span>
                 <span class="faction-tag" id="faction-display">BEAR</span>
                 <span id="map-display">Завод</span>
-                <div class="timer-box">Время: <span id="time-display">15</span></div>
+                <div class="timer-box">Ходы: <span id="time-display">30</span></div>
             </div>
-
             <div class="stats">
                 <div class="hp-bar-container">
                     <div class="hp-bar" id="player-hp-bar" style="width:100%"></div>
                     <span class="hp-text" id="hp-display">100/100</span>
                 </div>
+                <div class="energy-box">
+                    <span>Энергия:</span>
+                    <div class="energy-bar-container"><div class="energy-bar" id="energy-bar"></div></div>
+                    <span id="energy-display">100/100</span>
+                </div>
                 <div class="stat-box">₽: <span id="money-display">0</span></div>
                 <div class="stat-box">Броня: <span id="armor-display">0</span></div>
                 <div class="stat-box">Ранение: <span id="injury-display">нет</span></div>
+                <div class="stat-box">Оружие: <span id="weapon-display">Нож</span></div>
                 <button id="extract-btn" class="extract-btn">ВЫБРАТЬ ВЫХОД</button>
             </div>
         </header>
@@ -113,18 +179,47 @@
                         <div class="hp-bar enemy-bar" id="enemy-hp-bar" style="width:100%"></div>
                         <span class="hp-text" id="enemy-hp-display">100/100</span>
                     </div>
+
+                    <div id="enemy-loot-panel" class="enemy-loot-panel hidden">
+                        <h3>СНАРЯЖЕНИЕ ПРОТИВНИКА</h3>
+                        <div class="enemy-loot-grid">
+                            <div>
+                                <h4>ДОБЫЧА</h4>
+                                <div class="grid-wrapper">
+                                    <div class="grid-background" id="enemy-loot-bg"></div>
+                                    <div class="grid-items" id="enemy-loot-items"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4>ВАШ РЮКЗАК</h4>
+                                <div class="grid-wrapper">
+                                    <div class="grid-background" id="loot-player-bg"></div>
+                                    <div class="grid-items" id="loot-player-items"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="leave-loot-btn" class="event-btn">УЙТИ, НЕ ОСМАТРИВАЯ</button>
+                    </div>
+
+                    <div id="aim-target" class="aim-target hidden" aria-label="Мишень">
+                        <div class="target-head" data-zone="head" title="Голова"></div>
+                        <div class="target-body" data-zone="body" title="Корпус"></div>
+                        <div class="target-arm target-arm-left" data-zone="limb" title="Конечность"></div>
+                        <div class="target-arm target-arm-right" data-zone="limb" title="Конечность"></div>
+                        <div class="target-leg target-leg-left" data-zone="limb" title="Конечность"></div>
+                        <div class="target-leg target-leg-right" data-zone="limb" title="Конечность"></div>
+                    </div>
                 </div>
 
                 <section class="log-area" id="log-area">
-                    <p class="log-system">Рейд начался. Найди выход до конца таймера!</p>
+                    <p class="log-system">Подготовьтесь к рейду.</p>
                 </section>
 
                 <section class="action-area">
-                    <button id="loot-btn" class="main-action-btn">ЛУТАТЬ</button>
+                    <button id="loot-btn" class="main-action-btn">ИСКАТЬ ЛУТ</button>
                     <button id="move-btn" class="main-action-btn hidden">ИДТИ К ВЫХОДУ</button>
-
                     <div id="combat-actions" class="hidden combat-grid">
-                        <button id="shoot-btn" class="combat-btn">СТРЕЛЯТЬ (<span id="ammo-count">8</span>)</button>
+                        <button id="shoot-btn" class="combat-btn">АТАКОВАТЬ (<span id="ammo-count">0</span>)</button>
                         <button id="reload-btn" class="combat-btn">ПЕРЕЗАРЯДИТЬ</button>
                         <button id="cover-btn" class="combat-btn">В УКРЫТИЕ</button>
                         <button id="heal-btn" class="combat-btn">ЛЕЧИТЬСЯ</button>
@@ -136,14 +231,12 @@
 
             <aside class="sidebar">
                 <div class="inventory">
-                    <h3>РЮКЗАК</h3>
+                    <h3>АКТИВНЫЙ РЮКЗАК</h3>
                     <div class="grid-wrapper">
                         <div class="grid-background" id="grid-bg"></div>
                         <div class="grid-items" id="grid-items"></div>
                     </div>
-                    <div class="inv-footer">
-                        <span id="weight-display">Занято: 0/9</span>
-                    </div>
+                    <div class="inv-footer"><span id="weight-display">Занято: 0/9</span></div>
                 </div>
             </aside>
         </div>
